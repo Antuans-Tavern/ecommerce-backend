@@ -7,8 +7,8 @@ type User {
   email: String!
   status: Boolean!
   type: Int!
-  profile: Profile
-  shoppingCarts: [ShoppingCart]
+  # profile: Profile
+  # shoppingCarts: [ShoppingCart]
 }
 
 type Profile {

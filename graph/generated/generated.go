@@ -72,12 +72,10 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Email         func(childComplexity int) int
-		ID            func(childComplexity int) int
-		Profile       func(childComplexity int) int
-		ShoppingCarts func(childComplexity int) int
-		Status        func(childComplexity int) int
-		Type          func(childComplexity int) int
+		Email  func(childComplexity int) int
+		ID     func(childComplexity int) int
+		Status func(childComplexity int) int
+		Type   func(childComplexity int) int
 	}
 }
 
@@ -219,20 +217,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.ID(childComplexity), true
 
-	case "User.profile":
-		if e.complexity.User.Profile == nil {
-			break
-		}
-
-		return e.complexity.User.Profile(childComplexity), true
-
-	case "User.shoppingCarts":
-		if e.complexity.User.ShoppingCarts == nil {
-			break
-		}
-
-		return e.complexity.User.ShoppingCarts(childComplexity), true
-
 	case "User.status":
 		if e.complexity.User.Status == nil {
 			break
@@ -310,8 +294,8 @@ type User {
   email: String!
   status: Boolean!
   type: Int!
-  profile: Profile
-  shoppingCarts: [ShoppingCart]
+  # profile: Profile
+  # shoppingCarts: [ShoppingCart]
 }
 
 type Profile {
@@ -1125,70 +1109,6 @@ func (ec *executionContext) _User_type(ctx context.Context, field graphql.Collec
 	res := resTmp.(int)
 	fc.Result = res
 	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_profile(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Profile, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Profile)
-	fc.Result = res
-	return ec.marshalOProfile2ᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋgraphᚋmodelᚐProfile(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_shoppingCarts(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ShoppingCarts, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.ShoppingCart)
-	fc.Result = res
-	return ec.marshalOShoppingCart2ᚕᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋgraphᚋmodelᚐShoppingCart(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -2510,10 +2430,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "profile":
-			out.Values[i] = ec._User_profile(ctx, field, obj)
-		case "shoppingCarts":
-			out.Values[i] = ec._User_shoppingCarts(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3200,60 +3116,6 @@ func (ec *executionContext) marshalOProduct2ᚖgithubᚗcomᚋAntuansᚑTavern�
 		return graphql.Null
 	}
 	return ec._Product(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOProfile2ᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋgraphᚋmodelᚐProfile(ctx context.Context, sel ast.SelectionSet, v *model.Profile) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Profile(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOShoppingCart2ᚕᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋgraphᚋmodelᚐShoppingCart(ctx context.Context, sel ast.SelectionSet, v []*model.ShoppingCart) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOShoppingCart2ᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋgraphᚋmodelᚐShoppingCart(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalOShoppingCart2ᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋgraphᚋmodelᚐShoppingCart(ctx context.Context, sel ast.SelectionSet, v *model.ShoppingCart) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._ShoppingCart(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

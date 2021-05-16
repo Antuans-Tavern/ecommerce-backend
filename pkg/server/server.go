@@ -9,17 +9,22 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/Antuans-Tavern/ecommerce-backend/graph"
 	"github.com/Antuans-Tavern/ecommerce-backend/graph/generated"
+	"gorm.io/gorm"
 )
 
 const defaultPort = "80"
 
-func Serve() {
+func Serve(db *gorm.DB) {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
+		Resolvers: &graph.Resolver{
+			DB: db,
+		},
+	}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)

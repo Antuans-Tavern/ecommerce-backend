@@ -29,10 +29,8 @@ type ShoppingCart struct {
 }
 
 type User struct {
-	ID            string          `json:"id"`
-	Email         string          `json:"email"`
-	Status        bool            `json:"status"`
-	Type          int             `json:"type"`
-	Profile       *Profile        `json:"profile"`
-	ShoppingCarts []*ShoppingCart `json:"shoppingCarts"`
+	ID     string `json:"id"`
+	Email  string `json:"email"`
+	Status bool   `json:"status"`
+	Type   int    `json:"type"`
 }

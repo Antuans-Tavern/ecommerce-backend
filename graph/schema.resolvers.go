@@ -5,14 +5,17 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Antuans-Tavern/ecommerce-backend/graph/generated"
 	"github.com/Antuans-Tavern/ecommerce-backend/graph/model"
 )
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	users := []*model.User{}
+
+	err := r.DB.Find(&users).Error
+
+	return users, err
 }
 
 // Query returns generated.QueryResolver implementation.
