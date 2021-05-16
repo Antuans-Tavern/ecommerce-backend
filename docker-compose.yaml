@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  server:
+    build: .
+    volumes:
+      - .:/app
+      - $GOPATH/pkg/mod:/go/pkg/mod
+    ports: 
+      - 8000:80
+    environment: 
+      - PORT=80
+      - GOPATH=/go
