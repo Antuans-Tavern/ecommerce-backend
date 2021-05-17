@@ -1,3 +1,10 @@
 type Query {
-  users: [User]
+  users(pagination: Int! = 10, page: Int! = 1): [User]
+  user(id: Int!): User
+
+  categories(pagination: Int! = 10, page: Int! = 1): [Category]
+  category(id: Int!): Category
+
+  products(pagination: Int! = 10, page: Int! = 1): [Product]
+  product(id: Int!): Product
 }

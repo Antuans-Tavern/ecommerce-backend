@@ -7,11 +7,12 @@ type User {
   email: String!
   status: Boolean!
   type: Int!
-  # profile: Profile
+  profile: Profile
   # shoppingCarts: [ShoppingCart]
 }
 
 type Profile {
+  userID: ID
   name: String!
   lastname: String!
 }
@@ -29,10 +30,12 @@ type Product {
   description: String!
   price: Float!
   stock: Int!
-  category: [Category]
+  categoryID: ID!
+  category: Category
 }
 
 type Category {
   id: ID!
   name: String!
+  products: [Product!]!
 }

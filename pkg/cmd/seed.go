@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database"
-	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/seeder"
 
 	"github.com/spf13/cobra"
 )
@@ -25,23 +25,11 @@ import (
 // seedCmd represents the seed command
 var seedCmd = &cobra.Command{
 	Use:   "seed",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Fill database with test data",
+	Long:  `Fill database with test data`,
 	Run: func(cmd *cobra.Command, args []string) {
 		db, _ := database.Connect()
-		user := &model.User{
-			Email:    "asdad@mail.com",
-			Password: "asdasda",
-			Type:     1,
-		}
-
-		db.Create(user)
-
+		seeder.Run(db)
 	},
 }
 

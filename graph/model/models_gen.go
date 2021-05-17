@@ -3,22 +3,25 @@
 package model
 
 type Category struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID       string     `json:"id"`
+	Name     string     `json:"name"`
+	Products []*Product `json:"products"`
 }
 
 type Product struct {
-	ID          string      `json:"id"`
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	Price       float64     `json:"price"`
-	Stock       int         `json:"stock"`
-	Category    []*Category `json:"category"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Price       float64   `json:"price"`
+	Stock       int       `json:"stock"`
+	CategoryID  string    `json:"categoryID"`
+	Category    *Category `json:"category"`
 }
 
 type Profile struct {
-	Name     string `json:"name"`
-	Lastname string `json:"lastname"`
+	UserID   *string `json:"userID"`
+	Name     string  `json:"name"`
+	Lastname string  `json:"lastname"`
 }
 
 type ShoppingCart struct {
@@ -29,8 +32,9 @@ type ShoppingCart struct {
 }
 
 type User struct {
-	ID     string `json:"id"`
-	Email  string `json:"email"`
-	Status bool   `json:"status"`
-	Type   int    `json:"type"`
+	ID      string   `json:"id"`
+	Email   string   `json:"email"`
+	Status  bool     `json:"status"`
+	Type    int      `json:"type"`
+	Profile *Profile `json:"profile"`
 }

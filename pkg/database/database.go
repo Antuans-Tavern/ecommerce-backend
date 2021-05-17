@@ -20,12 +20,27 @@ func connectionString() string {
 }
 
 func Connect() (*gorm.DB, error) {
-	return gorm.Open(postgres.Open(connectionString()), &gorm.Config{})
+	return gorm.Open(postgres.Open(connectionString()), &gorm.Config{
+		PrepareStmt: true,
+	})
 }
 
 func Migrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&model.User{},
 		&model.Profile{},
+		&model.Category{},
+		&model.Product{},
+		&model.ShoppingCart{},
+	)
+}
+
+func Drop(db *gorm.DB) {
+	db.Migrator().DropTable(
+		&model.User{},
+		&model.Profile{},
+		&model.Category{},
+		&model.Product{},
+		&model.ShoppingCart{},
 	)
 }
