@@ -25,22 +25,31 @@ func Connect() (*gorm.DB, error) {
 	})
 }
 
-func Migrate(db *gorm.DB) {
-	db.AutoMigrate(
+func models() []interface{} {
+	return []interface{}{
 		&model.User{},
 		&model.Profile{},
 		&model.Category{},
 		&model.Product{},
 		&model.ShoppingCart{},
+		&model.ShoppingCartProduct{},
+		&model.Configuration{},
+		&model.Invoice{},
+		&model.InvoiceItem{},
+		&model.Payment{},
+		&model.Image{},
+		&model.Configuration{},
+	}
+}
+
+func Migrate(db *gorm.DB) {
+	db.AutoMigrate(
+		models()...,
 	)
 }
 
 func Drop(db *gorm.DB) {
 	db.Migrator().DropTable(
-		&model.User{},
-		&model.Profile{},
-		&model.Category{},
-		&model.Product{},
-		&model.ShoppingCart{},
+		models()...,
 	)
 }

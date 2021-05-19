@@ -30,5 +30,5 @@ func productSeeder(db *gorm.DB) {
 
 	db.CreateInBatches(products, 20)
 
-	color.Green("Seeded %d Products. (%vs)", len(products), time.Since(start).Seconds())
+	color.Green("Seeded %d Products. (%v)", len(products), time.Since(start))
 }

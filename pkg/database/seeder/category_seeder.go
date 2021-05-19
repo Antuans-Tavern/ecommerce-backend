@@ -23,5 +23,5 @@ func categorySeeder(db *gorm.DB) {
 
 	db.CreateInBatches(categories, 5)
 
-	color.Green("Seeded %d Users. (%vs)", len(categories), time.Since(start).Seconds())
+	color.Green("Seeded %d Users. (%v)", len(categories), time.Since(start))
 }

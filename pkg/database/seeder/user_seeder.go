@@ -46,6 +46,6 @@ func userSeeder(db *gorm.DB) {
 		},
 	)
 
-	db.CreateInBatches(users, 10)
-	color.Green("Seeded %d Users. (%vs)", len(users), time.Since(start).Seconds())
+	db.CreateInBatches(users, 100)
+	color.Green("Seeded %d Users. (%v)", len(users), time.Since(start))
 }

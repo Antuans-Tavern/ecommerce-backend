@@ -19,7 +19,7 @@ func Run(db *gorm.DB) {
 		productSeeder,
 	)
 
-	color.Green("\n\nTook %vs", time.Since(start))
+	color.Green("\n\nTook %v", time.Since(start))
 }
 
 func call(db *gorm.DB, seeders ...seeder) {

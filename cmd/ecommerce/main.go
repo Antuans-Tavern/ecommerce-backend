@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Antuans-Tavern/ecommerce-backend/config"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/server"
 )
 
@@ -16,6 +17,7 @@ func main() {
 	}
 
 	database.Migrate(db)
+	model.SetPivots(db)
 
 	server.Serve(db)
 }
