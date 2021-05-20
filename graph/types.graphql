@@ -8,7 +8,8 @@ type User {
   status: Boolean!
   type: Int!
   profile: Profile
-  # shoppingCarts: [ShoppingCart]
+  shoppingCarts: [ShoppingCart]!
+  invoices: [Invoices]!
 }
 
 type Profile {
