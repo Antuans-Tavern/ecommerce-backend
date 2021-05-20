@@ -14,5 +14,6 @@ type User struct {
 	Type     uint8   `gorm:"default:0;size:1;not null;"`
 	Profile  Profile `gorm:"constraint:OnDelete:CASCADE;"`
 	Image    Image   `gorm:"polymorphic:Imageable;"`
+	Invoices Invoice
 	gorm.Model
 }

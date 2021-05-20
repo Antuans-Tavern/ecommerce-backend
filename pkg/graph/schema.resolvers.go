@@ -6,8 +6,8 @@ package graph
 import (
 	"context"
 
-	"github.com/Antuans-Tavern/ecommerce-backend/graph/generated"
-	"github.com/Antuans-Tavern/ecommerce-backend/graph/model"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
+	generated1 "github.com/Antuans-Tavern/ecommerce-backend/pkg/graph/generated"
 )
 
 func (r *queryResolver) Users(ctx context.Context, pagination int, page int) ([]*model.User, error) {
@@ -54,7 +54,7 @@ func (r *queryResolver) Product(ctx context.Context, id int) (*model.Product, er
 	return product, err
 }
 
-// Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
+// Query returns generated1.QueryResolver implementation.
+func (r *Resolver) Query() generated1.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }

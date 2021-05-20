@@ -9,7 +9,6 @@ type User {
   type: Int!
   profile: Profile
   shoppingCarts: [ShoppingCart]!
-  invoices: [Invoices]!
 }
 
 type Profile {

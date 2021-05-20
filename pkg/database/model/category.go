@@ -8,5 +8,6 @@ type Category struct {
 	Status   bool   `gorm:"default:1;"`
 	ParentID uint   `gorm:"foreignKey;"`
 	Parent   *Category
+	Children []*Category
 	Products []Product
 }
