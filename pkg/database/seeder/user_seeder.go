@@ -24,9 +24,9 @@ func userSeeder(db *gorm.DB) {
 				Email:    gofakeit.Email(),
 				Password: util.Hash("secret"),
 				Status:   gofakeit.Bool(),
-				Type: uint8(gofakeit.RandomInt([]int{
+				Type: gofakeit.RandomInt([]int{
 					0, 1,
-				})),
+				}),
 			},
 		})
 	}
@@ -39,9 +39,9 @@ func userSeeder(db *gorm.DB) {
 				Email:    "admin@testing.com",
 				Password: util.Hash("secret"),
 				Status:   gofakeit.Bool(),
-				Type: uint8(gofakeit.RandomInt([]int{
+				Type: gofakeit.RandomInt([]int{
 					0, 1,
-				})),
+				}),
 			},
 		},
 	)

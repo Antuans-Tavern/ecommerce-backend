@@ -11,6 +11,7 @@ func Load() {
 	viper.SetDefault("port", 80)
 	viper.SetDefault("timezone", "UTC")
 	viper.SetDefault("debug", false)
+	viper.SetDefault("app_secret", "secret")
 
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
