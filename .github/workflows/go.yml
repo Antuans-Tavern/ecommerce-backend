@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql version: '12'
 
     - name: Set up Go
       uses: actions/setup-go@v2
