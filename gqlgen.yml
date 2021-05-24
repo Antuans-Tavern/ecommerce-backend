@@ -1,6 +1,6 @@
-# Where are all the schema files located? globs are supported eg  src/**/*.graphql
+# Where are all the schema files located? globs are supported eg  src/**/*.graphqls
 schema:
-  - graph/*.graphql
+  - graph/*.graphqls
 
 # Where should the generated server code go?
 exec:
@@ -14,8 +14,8 @@ exec:
 
 # Where should any generated models go?
 model:
-  filename: graph/model/models_gen.go
-  package: model
+  filename: graph/types/models_gen.go
+  package: types
 
 # Where should the resolver implementations go?
 resolver:
@@ -35,7 +35,7 @@ resolver:
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
-  - "github.com/Antuans-Tavern/ecommerce-backend/graph/model"
+  - "github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -46,11 +46,13 @@ models:
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID
+      - github.com/Antuans-Tavern/ecommerce-backend/graph/types.Uint
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
   Int:
     model:
       - github.com/99designs/gqlgen/graphql.Int
+      - github.com/Antuans-Tavern/ecommerce-backend/graph/types.Uint
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32

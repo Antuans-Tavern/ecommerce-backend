@@ -1,34 +1,34 @@
 package server
 
 import (
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/Antuans-Tavern/ecommerce-backend/graph"
-	"github.com/Antuans-Tavern/ecommerce-backend/graph/generated"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
 )
 
-const defaultPort = "80"
+func playgroundHandler() echo.HandlerFunc {
+	h := playground.Handler("GraphQL", "/query")
 
-func Serve(db *gorm.DB) {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
+	return func(c echo.Context) error {
+		h.ServeHTTP(c.Response().Writer, c.Request())
+		return nil
 	}
+}
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
-		Resolvers: &graph.Resolver{
-			DB: db,
-		},
+func SetUp(db *gorm.DB) *echo.Echo {
+	e := echo.New()
+
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(60)))
+
+	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
+		LogLevel: log.INFO,
 	}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	e.POST("/query", graph.QueryHandler(db))
+	e.GET("/", playgroundHandler())
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	return e
 }

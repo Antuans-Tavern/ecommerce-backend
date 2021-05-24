@@ -15,13 +15,13 @@ func categorySeeder(db *gorm.DB) {
 
 	categories := []*model.Category{}
 
-	for _, cat := range gofakeit.Categories() {
+	for i := 0; i < 10; i++ {
 		categories = append(categories, &model.Category{
-			Name: cat[0],
+			Name: gofakeit.HipsterWord(),
 		})
 	}
 
-	db.CreateInBatches(categories, 5)
+	db.CreateInBatches(categories, 10)
 
-	color.Green("Seeded %d Users. (%v)", len(categories), time.Since(start))
+	color.Green("Seeded %d categories. (%v)", len(categories), time.Since(start))
 }

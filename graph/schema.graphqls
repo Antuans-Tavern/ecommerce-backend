@@ -2,27 +2,31 @@
 #
 # https://gqlgen.com/getting-started/
 
+type Query {
+  login(email: String!, password: String!): Login!
+
+  products(pagination: Int! = 10, page: Int! = 1): [Product]!
+}
+
+type Mutation {
+  register(data: Register!): Login!
+}
+
+type Login {
+  token: String!
+  user: User!
+}
+
 type User {
   id: ID!
   email: String!
-  status: Boolean!
   type: Int!
   profile: Profile
-  shoppingCarts: [ShoppingCart]!
-  invoices: [Invoices]!
 }
 
 type Profile {
-  userID: ID
   name: String!
   lastname: String!
-}
-
-type ShoppingCart {
-  id: ID!
-  status: Int!
-  user: User!
-  products: [Product]
 }
 
 type Product {
@@ -31,12 +35,11 @@ type Product {
   description: String!
   price: Float!
   stock: Int!
-  categoryID: ID!
-  category: Category
 }
 
-type Category {
-  id: ID!
+input Register {
+  email: String!
+  password: String!
   name: String!
-  products: [Product!]!
+  lastname: String!
 }

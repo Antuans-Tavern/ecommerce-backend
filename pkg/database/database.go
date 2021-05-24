@@ -9,7 +9,17 @@ import (
 	"gorm.io/gorm"
 )
 
-func connectionString() string {
+func TestingConnectionString() string {
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=UTC",
+		viper.GetString("db_host"),
+		viper.GetString("db_port"),
+		viper.GetString("db_user"),
+		viper.GetString("db_password"),
+		viper.GetString("db_name_test"),
+	)
+}
+
+func ConnectionString() string {
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=UTC",
 		viper.GetString("db_host"),
 		viper.GetString("db_port"),
@@ -20,12 +30,12 @@ func connectionString() string {
 }
 
 func Connect() (*gorm.DB, error) {
-	return gorm.Open(postgres.Open(connectionString()), &gorm.Config{
+	return gorm.Open(postgres.Open(ConnectionString()), &gorm.Config{
 		PrepareStmt: true,
 	})
 }
 
-func models() []interface{} {
+func Models() []interface{} {
 	return []interface{}{
 		&model.User{},
 		&model.Profile{},
@@ -39,17 +49,19 @@ func models() []interface{} {
 		&model.Payment{},
 		&model.Image{},
 		&model.Configuration{},
+		&model.Coupon{},
+		&model.AccessToken{},
 	}
 }
 
 func Migrate(db *gorm.DB) {
 	db.AutoMigrate(
-		models()...,
+		Models()...,
 	)
 }
 
 func Drop(db *gorm.DB) {
 	db.Migrator().DropTable(
-		models()...,
+		Models()...,
 	)
 }

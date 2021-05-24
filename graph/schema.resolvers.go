@@ -5,56 +5,74 @@ package graph
 
 import (
 	"context"
+	"errors"
 
 	"github.com/Antuans-Tavern/ecommerce-backend/graph/generated"
-	"github.com/Antuans-Tavern/ecommerce-backend/graph/model"
+	"github.com/Antuans-Tavern/ecommerce-backend/graph/types"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/lang"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/util"
 )
 
-func (r *queryResolver) Users(ctx context.Context, pagination int, page int) ([]*model.User, error) {
-	users := []*model.User{}
+func (r *mutationResolver) Register(ctx context.Context, data types.Register) (*types.Login, error) {
+	user := &model.User{
+		Email:    data.Email,
+		Password: util.Hash(data.Password),
+		Profile: model.Profile{
+			Name:     data.Name,
+			Lastname: data.Lastname,
+		},
+	}
 
-	err := r.DB.WithContext(ctx).Joins("Profile").Find(&users).Limit(pagination).Offset(page).Error
+	if err := r.DB.Create(user).Error; err != nil {
+		return nil, err
+	}
 
-	return users, err
+	accessToken, err := user.CreateAccressToken(r.DB)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.Login{
+		Token: accessToken,
+		User:  user,
+	}, nil
 }
 
-func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
+func (r *queryResolver) Login(ctx context.Context, email string, password string) (*types.Login, error) {
 	user := &model.User{}
-	err := r.DB.WithContext(ctx).Joins("Profile").Find(user, "users.id = ?", id).Error
+	if err := r.DB.WithContext(ctx).Joins("Profile").First(user, "email = ?", email).Error; err != nil {
+		return nil, errors.New(lang.Translator().Sprintf("login error"))
+	}
 
-	return user, err
-}
+	if !util.CompareHash(user.Password, password) {
+		return nil, errors.New(lang.Translator().Sprintf("login error"))
+	}
 
-func (r *queryResolver) Categories(ctx context.Context, pagination int, page int) ([]*model.Category, error) {
-	categories := []*model.Category{}
-	err := r.DB.WithContext(ctx).Preload("Products").Find(&categories).Limit(pagination).Offset(page).Error
+	accessToken, err := user.CreateAccressToken(r.DB)
 
-	return categories, err
-}
+	if err != nil {
+		return nil, err
+	}
 
-func (r *queryResolver) Category(ctx context.Context, id int) (*model.Category, error) {
-	category := &model.Category{}
-	err := r.DB.WithContext(ctx).Preload("Products").Find(category, "categories.id = ?", id).Error
-
-	return category, err
+	return &types.Login{
+		Token: accessToken,
+		User:  user,
+	}, nil
 }
 
 func (r *queryResolver) Products(ctx context.Context, pagination int, page int) ([]*model.Product, error) {
 	products := []*model.Product{}
-	err := r.DB.WithContext(ctx).Joins("Category").Find(&products).Error
-
+	err := r.DB.WithContext(ctx).Find(&products).Limit(pagination).Offset(page).Error
 	return products, err
 }
 
-func (r *queryResolver) Product(ctx context.Context, id int) (*model.Product, error) {
-	product := &model.Product{}
-
-	err := r.DB.WithContext(ctx).Joins("Category").Find(product, "products.id = ?", id).Error
-
-	return product, err
-}
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
