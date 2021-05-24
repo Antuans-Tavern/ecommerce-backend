@@ -2,6 +2,7 @@ package graph
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -46,10 +47,21 @@ func TestLoginQuery(t *testing.T) {
 	if assert.NoError(t, h(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 
-		response := map[string]interface{}{}
-		json.Unmarshal([]byte(rec.Body.String()), &response)
+		response := struct {
+			Data struct {
+				Login struct {
+					Token string
+					User  struct {
+						Email string
+					}
+				}
+			}
+		}{}
 
-		assert.NotEmpty(t, response["token"])
-		assert.NotEmpty(t, response["name"])
+		json.Unmarshal([]byte(rec.Body.String()), &response)
+		fmt.Println(response)
+
+		assert.NotEmpty(t, response.Data.Login.Token)
+		assert.NotEmpty(t, response.Data.Login.User.Email)
 	}
 }
