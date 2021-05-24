@@ -14,29 +14,7 @@ import (
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/util"
 )
 
-func (r *queryResolver) Login(ctx context.Context, email string, password string) (*types.Login, error) {
-	user := &model.User{}
-	if err := r.DB.WithContext(ctx).Joins("Profile").First(user, "email = ?", email).Error; err != nil {
-		return nil, errors.New(lang.Translator().Sprintf("login error"))
-	}
-
-	if !util.CompareHash(user.Password, password) {
-		return nil, errors.New(lang.Translator().Sprintf("login error"))
-	}
-
-	accessToken, err := user.CreateAccressToken(r.DB)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.Login{
-		Token: accessToken,
-		User:  user,
-	}, nil
-}
-
-func (r *queryResolver) Register(ctx context.Context, data types.Register) (*types.Login, error) {
+func (r *mutationResolver) Register(ctx context.Context, data types.Register) (*types.Login, error) {
 	user := &model.User{
 		Email:    data.Email,
 		Password: util.Hash(data.Password),
@@ -62,7 +40,39 @@ func (r *queryResolver) Register(ctx context.Context, data types.Register) (*typ
 	}, nil
 }
 
+func (r *queryResolver) Login(ctx context.Context, email string, password string) (*types.Login, error) {
+	user := &model.User{}
+	if err := r.DB.WithContext(ctx).Joins("Profile").First(user, "email = ?", email).Error; err != nil {
+		return nil, errors.New(lang.Translator().Sprintf("login error"))
+	}
+
+	if !util.CompareHash(user.Password, password) {
+		return nil, errors.New(lang.Translator().Sprintf("login error"))
+	}
+
+	accessToken, err := user.CreateAccressToken(r.DB)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.Login{
+		Token: accessToken,
+		User:  user,
+	}, nil
+}
+
+func (r *queryResolver) Products(ctx context.Context, pagination int, page int) ([]*model.Product, error) {
+	products := []*model.Product{}
+	err := r.DB.WithContext(ctx).Find(&products).Limit(pagination).Offset(page).Error
+	return products, err
+}
+
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

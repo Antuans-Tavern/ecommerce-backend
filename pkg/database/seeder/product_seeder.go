@@ -10,7 +10,7 @@ import (
 )
 
 func productSeeder(db *gorm.DB) {
-	color.Cyan("Seeding Products...")
+	color.Blue("Seeding Products...")
 	start := time.Now()
 
 	products := []*model.Product{}
@@ -22,13 +22,14 @@ func productSeeder(db *gorm.DB) {
 	for _, category := range categories {
 		for i := 0; i < 10; i++ {
 			products = append(products, &model.Product{
-				Name:       gofakeit.HipsterWord(),
-				CategoryID: category.ID,
+				Name:        gofakeit.HipsterSentence(2),
+				Description: gofakeit.HipsterParagraph(1, 3, 5, " "),
+				CategoryID:  category.ID,
 			})
 		}
 	}
 
-	db.CreateInBatches(products, 20)
+	db.CreateInBatches(products, 10)
 
 	color.Green("Seeded %d Products. (%v)", len(products), time.Since(start))
 }

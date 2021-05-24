@@ -53,5 +53,6 @@ models:
   Int:
     model:
       - github.com/99designs/gqlgen/graphql.Int
+      - github.com/Antuans-Tavern/ecommerce-backend/graph/types.Uint
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32

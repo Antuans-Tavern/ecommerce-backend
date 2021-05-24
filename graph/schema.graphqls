@@ -4,6 +4,11 @@
 
 type Query {
   login(email: String!, password: String!): Login!
+
+  products(pagination: Int! = 10, page: Int! = 1): [Product]!
+}
+
+type Mutation {
   register(data: Register!): Login!
 }
 
@@ -22,6 +27,14 @@ type User {
 type Profile {
   name: String!
   lastname: String!
+}
+
+type Product {
+  id: ID!
+  name: String!
+  description: String!
+  price: Float!
+  stock: Int!
 }
 
 input Register {

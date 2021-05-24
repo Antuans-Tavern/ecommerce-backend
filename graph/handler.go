@@ -14,14 +14,6 @@ func QueryHandler(db *gorm.DB) echo.HandlerFunc {
 		},
 	}))
 
-	// h.SetErrorPresenter(func(ctx context.Context, e error) *gqlerror.Error {
-	// 	err := graphql.DefaultErrorPresenter(ctx, e)
-
-	// 	fmt.Println("---------------------" + err.Error() + "-----------------")
-
-	// 	return nil
-	// })
-
 	return func(c echo.Context) error {
 		h.ServeHTTP(c.Response().Writer, c.Request())
 		return nil
