@@ -17,6 +17,7 @@ func Run(db *gorm.DB) {
 		userSeeder,
 		categorySeeder,
 		productSeeder,
+		imageSeeder,
 	)
 
 	color.Green("\n\nTook %v", time.Since(start))

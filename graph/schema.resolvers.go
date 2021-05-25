@@ -11,6 +11,7 @@ import (
 	"github.com/Antuans-Tavern/ecommerce-backend/graph/types"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/lang"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/resolver"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/util"
 )
 
@@ -63,9 +64,11 @@ func (r *queryResolver) Login(ctx context.Context, email string, password string
 }
 
 func (r *queryResolver) Products(ctx context.Context, pagination int, page int) ([]*model.Product, error) {
-	products := []*model.Product{}
-	err := r.DB.WithContext(ctx).Find(&products).Limit(pagination).Offset(page).Error
-	return products, err
+	return resolver.ProductResolver(r.DB, ctx, pagination, page)
+}
+
+func (r *queryResolver) SearchProduct(ctx context.Context, search string, pagination int, page int) ([]*model.Product, error) {
+	return resolver.ProductSearch(r.DB, ctx, search, pagination, page)
 }
 
 // Mutation returns generated.MutationResolver implementation.

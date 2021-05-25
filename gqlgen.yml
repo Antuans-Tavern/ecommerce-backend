@@ -46,13 +46,19 @@ models:
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID
-      - github.com/Antuans-Tavern/ecommerce-backend/graph/types.Uint
+      - github.com/Antuans-Tavern/ecommerce-backend/pkg/types.Uint
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
   Int:
     model:
       - github.com/99designs/gqlgen/graphql.Int
-      - github.com/Antuans-Tavern/ecommerce-backend/graph/types.Uint
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
+      - github.com/Antuans-Tavern/ecommerce-backend/pkg/types.Uint
+      - github.com/Antuans-Tavern/ecommerce-backend/pkg/types.Uint8
+  Uint:
+    model:
+      - github.com/Antuans-Tavern/ecommerce-backend/pkg/types.Uint
+      - github.com/Antuans-Tavern/ecommerce-backend/pkg/types.Uint8
+

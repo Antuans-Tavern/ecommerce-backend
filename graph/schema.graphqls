@@ -1,11 +1,15 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+scalar Uint
+scalar Uint8
 
 type Query {
   login(email: String!, password: String!): Login!
 
-  products(pagination: Int! = 10, page: Int! = 1): [Product]!
+  products(pagination: Int! = 10, page: Int! = 0): [Product]!
+  searchProduct(
+    search: String! = ""
+    pagination: Int! = 10
+    page: Int!
+  ): [Product]!
 }
 
 type Mutation {
@@ -35,6 +39,17 @@ type Product {
   description: String!
   price: Float!
   stock: Int!
+  images: [Image]!
+}
+
+type Image {
+  id: ID!
+  basePath: String!
+  path: String!
+  disk: Uint!
+  type: Int!
+  imageableID: ID!
+  imageableType: String!
 }
 
 input Register {
