@@ -59,7 +59,7 @@ jobs:
           username: ${{ secrets.USER }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSH_KEY }}
-          source: "dist/ecommerce-backend_linux_amd64"
-          target: "test"
+          source: "dist/ecommerce-backend_linux_amd64/"
+          target: "ecommerce"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
