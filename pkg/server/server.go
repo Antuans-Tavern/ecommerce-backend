@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/Antuans-Tavern/ecommerce-backend/graph"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graph"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"

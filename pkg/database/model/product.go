@@ -1,6 +1,8 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Product struct {
 	gorm.Model
@@ -8,7 +10,16 @@ type Product struct {
 	Description string
 	Price       float64 `gorm:"not null;"`
 	Stock       uint
-	CategoryID  uint `gorm:"foreingKey;"`
+	CategoryID  uint
 	Category    *Category
 	Images      []Image `gorm:"polymorphic:Imageable;"`
+}
+
+func JoinCategories(id int) func(*gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Joins("INNER JOIN (?) as all_categories", db.Raw("? UNION ?",
+			db.Model(&Category{}).Where("id = ?", id),
+			db.Model(&Category{}).Where("parent_id = ?", id),
+		))
+	}
 }
