@@ -9,19 +9,34 @@ import (
 	"gorm.io/gorm"
 )
 
-func categorySeeder(db *gorm.DB) {
+func CategorySeeder(db *gorm.DB) {
 	color.Blue("Seeding Categories...")
 	start := time.Now()
 
+	categories := seedCategories(10, nil)
+
+	db.CreateInBatches(&categories, 10)
+	color.Green("Seeded %d categories. (%v)", len(categories), time.Since(start))
+
+	subCategories := []*model.Category{}
+
+	for _, category := range categories {
+		subCategories = append(subCategories, seedCategories(5, &category.ID)...)
+	}
+
+	db.CreateInBatches(&subCategories, 10)
+	color.Green("Seeded %d subcategories. (%v)", len(subCategories), time.Since(start))
+}
+
+func seedCategories(count int, parent *uint) []*model.Category {
 	categories := []*model.Category{}
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < count; i++ {
 		categories = append(categories, &model.Category{
-			Name: gofakeit.HipsterWord(),
+			Name:     gofakeit.HipsterSentence(3),
+			ParentID: parent,
 		})
 	}
 
-	db.CreateInBatches(categories, 10)
-
-	color.Green("Seeded %d categories. (%v)", len(categories), time.Since(start))
+	return categories
 }

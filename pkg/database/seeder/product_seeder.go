@@ -1,6 +1,7 @@
 package seeder
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
@@ -9,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func productSeeder(db *gorm.DB) {
+func ProductSeeder(db *gorm.DB) {
 	color.Blue("Seeding Products...")
 	start := time.Now()
 
@@ -22,7 +23,7 @@ func productSeeder(db *gorm.DB) {
 	for _, category := range categories {
 		for i := 0; i < 10; i++ {
 			products = append(products, &model.Product{
-				Name:        gofakeit.HipsterSentence(2),
+				Name:        fmt.Sprintf("%s %s", gofakeit.HipsterSentence(3), gofakeit.Word()),
 				Description: gofakeit.HipsterParagraph(1, 3, 5, " "),
 				CategoryID:  category.ID,
 			})

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func imageSeeder(db *gorm.DB) {
+func ImageSeeder(db *gorm.DB) {
 	color.Blue("Seeding images...")
 	start := time.Now()
 

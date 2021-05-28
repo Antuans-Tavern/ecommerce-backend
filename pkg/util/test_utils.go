@@ -6,6 +6,7 @@ import (
 
 	"github.com/Antuans-Tavern/ecommerce-backend/config"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database"
+	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 )
 
@@ -23,7 +24,11 @@ func PrepareDatabase() {
 }
 
 func createDb() {
-	if db, _ := sql.Open("postgres", database.TestingConnectionString()); db.Ping() != nil {
+	if db, err := sql.Open("postgres", database.TestingConnectionString()); err != nil || db.Ping() != nil {
+		if err != nil {
+			panic(err)
+		}
+
 		db.Close()
 
 		db, _ = sql.Open("postgres", database.ConnectionString())

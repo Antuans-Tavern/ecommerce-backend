@@ -7,22 +7,25 @@ import (
 	"gorm.io/gorm"
 )
 
-func ProductResolver(db *gorm.DB, ctx context.Context, pagination int, page int) ([]*model.Product, error) {
-	products := []*model.Product{}
-	err := db.WithContext(ctx).Preload("Images").Limit(pagination).Offset((page - 1) * pagination).Find(&products).Error
-	return products, err
-}
-
-func ProductSearch(db *gorm.DB, ctx context.Context, search string, pagination, page int) ([]*model.Product, error) {
+func ProductResolver(db *gorm.DB, ctx context.Context, search *string, pagination int, page int, category *int) ([]*model.Product, error) {
 	products := []*model.Product{}
 
-	err := db.WithContext(ctx).
+	tx := db.WithContext(ctx).
 		Preload("Images").
-		Limit(pagination).
-		Offset((page-1)*pagination).
-		Where("to_tsvector(name) @@ plainto_tsquery('?')", search).
-		Or("to_tsvector(description) @@ plainto_tsquery('?')", search).
-		Find(&products).Error
+		Preload("Category").
+		Limit(pagination).Offset((page - 1) * pagination)
 
+	if search != nil {
+		tx = tx.Where(
+			db.Where("products.name ILIKE ?", "%"+*search+"%").
+				Or("products.description ILIKE ?", "%"+*search+"%"),
+		)
+	}
+
+	if category != nil {
+		tx = tx.Joins("INNER JOIN categories ON categories.id = products.category_id").Where("categories.id = ?", *category)
+	}
+
+	err := tx.Find(&products).Error
 	return products, err
 }

@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func userSeeder(db *gorm.DB) {
+func UserSeeder(db *gorm.DB) {
 	color.Blue("Seeding Users...")
 	start := time.Now()
 

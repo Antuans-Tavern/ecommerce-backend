@@ -1,6 +1,7 @@
 package lang
 
 import (
+	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"golang.org/x/text/message/catalog"
@@ -28,5 +29,5 @@ func init() {
 }
 
 func Translator() *message.Printer {
-	return message.NewPrinter(language.Spanish)
+	return message.NewPrinter(language.MustParse(viper.GetString("lang")))
 }

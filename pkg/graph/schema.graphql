@@ -4,11 +4,11 @@ scalar Uint8
 type Query {
   login(email: String!, password: String!): Login!
 
-  products(pagination: Int! = 10, page: Int! = 0): [Product]!
-  searchProduct(
-    search: String! = ""
+  products(
+    search: String
     pagination: Int! = 10
-    page: Int!
+    page: Int! = 0
+    category: Int
   ): [Product]!
 }
 
@@ -39,6 +39,7 @@ type Product {
   description: String!
   price: Float!
   stock: Int!
+  category: Category
   images: [Image]!
 }
 
@@ -50,6 +51,14 @@ type Image {
   type: Int!
   imageableID: ID!
   imageableType: String!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  status: Boolean!
+  parent: Category
+  products: [Product]!
 }
 
 input Register {
