@@ -3,6 +3,7 @@ name: Go
 on: [push, pull_request]
 
 jobs:
+  
   test:
     runs-on: ubuntu-20.04
     services:
@@ -30,9 +31,11 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
   deploy:
     needs: test
     runs-on: ubuntu-20.04
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       -
         name: Checkout
