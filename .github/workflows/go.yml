@@ -64,5 +64,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: dist/ecommerce-backend_linux_amd64/ecommerce
           target: ecommerce
+      - 
+        name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          source: dist/ecommerce-backend_linux_amd64/ecommerce
+          target: ecommerce
+          script: systemctl restart api
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
