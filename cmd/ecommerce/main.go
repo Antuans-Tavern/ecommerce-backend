@@ -11,7 +11,6 @@ import (
 
 func main() {
 	config.Load()
-
 	db, err := database.Connect()
 
 	if err != nil {
