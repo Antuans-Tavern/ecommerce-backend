@@ -1,0 +1,106 @@
+project_name: ecommerce-backend
+release:
+  github:
+    owner: Antuans-Tavern
+    name: ecommerce-backend
+  name_template: '{{.Tag}}'
+milestones:
+- repo:
+    owner: Antuans-Tavern
+    name: ecommerce-backend
+  name_template: '{{ .Tag }}'
+scoop:
+  name: ecommerce-backend
+  commit_author:
+    name: goreleaserbot
+    email: goreleaser@carlosbecker.com
+  commit_msg_template: Scoop update for {{ .ProjectName }} version {{ .Tag }}
+builds:
+- id: ecommerce-backend
+  goos:
+  - linux
+  - windows
+  - darwin
+  goarch:
+  - amd64
+  - arm64
+  - "386"
+  goarm:
+  - "6"
+  gomips:
+  - hardfloat
+  targets:
+  - linux_amd64
+  - linux_arm64
+  - linux_386
+  - windows_amd64
+  - windows_386
+  - darwin_amd64
+  - darwin_arm64
+  dir: .
+  main: ./cmd/ecommerce
+  ldflags:
+  - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+    -X main.builtBy=goreleaser
+  binary: ecommerce-backend
+  lang: go
+  gobinary: go
+archives:
+- id: default
+  builds:
+  - ecommerce-backend
+  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm
+    }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+  replacements:
+    "386": i386
+    amd64: x86_64
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+  format: tar.gz
+  files:
+  - licence*
+  - LICENCE*
+  - license*
+  - LICENSE*
+  - readme*
+  - README*
+  - changelog*
+  - CHANGELOG*
+  allow_different_binary_count: false
+snapshot:
+  name_template: '{{ .Tag }}-next'
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+dockers:
+- goos: linux
+  goarch: amd64
+  dockerfile: ./cmd/Dockerfile
+changelog:
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+  sort: asc
+dist: dist
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+  gitlab_token: ~/.config/goreleaser/gitlab_token
+  gitea_token: ~/.config/goreleaser/gitea_token
+before:
+  hooks:
+  - go mod tidy
+source:
+  name_template: '{{ .ProjectName }}-{{ .Version }}'
+  format: tar.gz
+gomod:
+  gobinary: go
+announce:
+  twitter:
+    message_template: '{{ .ProjectName }} {{ .Tag }} is out! Check it out at {{ .GitURL
+      }}/releases/tag/{{ .Tag }}'
+github_urls:
+  download: https://github.com
+gitlab_urls:
+  download: https://gitlab.com

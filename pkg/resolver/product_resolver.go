@@ -4,10 +4,11 @@ import (
 	"context"
 
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graph/types"
 	"gorm.io/gorm"
 )
 
-func ProductResolver(db *gorm.DB, ctx context.Context, search *string, pagination int, page int, category *int) ([]*model.Product, error) {
+func ProductsResolver(db *gorm.DB, ctx context.Context, search *string, pagination int, page int, category *int) (*types.ProductCollection, error) {
 	products := []*model.Product{}
 
 	tx := db.WithContext(ctx).
@@ -27,5 +28,21 @@ func ProductResolver(db *gorm.DB, ctx context.Context, search *string, paginatio
 	}
 
 	err := tx.Find(&products).Error
-	return products, err
+
+	var count int64
+
+	db.Table("products").Count(&count)
+
+	return &types.ProductCollection{
+		Data:  products,
+		Total: int(count),
+	}, err
+}
+
+func ProductResolver(db *gorm.DB, ctx context.Context, id int) (*model.Product, error) {
+	product := &model.Product{}
+
+	err := db.Joins("Category").First(product, "products.id = ?", id).Error
+
+	return product, err
 }

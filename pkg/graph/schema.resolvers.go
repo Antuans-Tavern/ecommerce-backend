@@ -20,8 +20,20 @@ func (r *queryResolver) Login(ctx context.Context, email string, password string
 	return resolver.Login(r.DB, ctx, email, password)
 }
 
-func (r *queryResolver) Products(ctx context.Context, search *string, pagination int, page int, category *int) ([]*model.Product, error) {
-	return resolver.ProductResolver(r.DB, ctx, search, pagination, page, category)
+func (r *queryResolver) Categories(ctx context.Context, search *string, pagination int, page int, productsPagination int, productsPage int) (*types.CategoryCollection, error) {
+	return resolver.CategoriesResolver(r.DB, ctx, search, pagination, page, productsPagination, productsPage)
+}
+
+func (r *queryResolver) Category(ctx context.Context, id int, productsPagination int, productsPage int) (*model.Category, error) {
+	return resolver.CategoryResolver(r.DB, ctx, id, productsPagination, productsPage)
+}
+
+func (r *queryResolver) Products(ctx context.Context, search *string, pagination int, page int, category *int) (*types.ProductCollection, error) {
+	return resolver.ProductsResolver(r.DB, ctx, search, pagination, page, category)
+}
+
+func (r *queryResolver) Product(ctx context.Context, id int) (*model.Product, error) {
+	return resolver.ProductResolver(r.DB, ctx, id)
 }
 
 // Mutation returns generated.MutationResolver implementation.

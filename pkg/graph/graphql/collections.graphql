@@ -1,0 +1,9 @@
+type ProductCollection {
+  data: [Product!]!
+  total: Int!
+}
+
+type CategoryCollection {
+  data: [Category!]!
+  total: Int!
+}

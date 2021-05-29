@@ -1,0 +1,44 @@
+type Login {
+  token: String!
+  user: User!
+}
+
+type User {
+  id: ID!
+  email: String!
+  type: Int!
+  profile: Profile
+}
+
+type Profile {
+  name: String!
+  lastname: String!
+}
+
+type Product {
+  id: ID!
+  name: String!
+  description: String!
+  price: Float!
+  stock: Int!
+  category: Category
+  images: [Image]!
+}
+
+type Image {
+  id: ID!
+  basePath: String!
+  path: String!
+  disk: Uint!
+  type: Int!
+  imageableID: ID!
+  imageableType: String!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  status: Boolean!
+  parent: Category
+  products: [Product]!
+}
