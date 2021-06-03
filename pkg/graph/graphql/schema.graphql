@@ -1,0 +1,33 @@
+scalar Uint
+scalar Uint8
+
+type Query {
+  login(email: String!, password: String!): Login!
+
+  categories(
+    search: String
+    pagination: Int! = 10
+    page: Int! = 1
+    productsPagination: Int! = 10
+    productsPage: Int! = 1
+  ): CategoryCollection!
+
+  category(
+    id: Int!
+    productsPagination: Int! = 10
+    productsPage: Int! = 1
+  ): Category
+
+  products(
+    search: String
+    pagination: Int! = 10
+    page: Int! = 1
+    category: Int
+  ): ProductCollection!
+
+  product(id: Int!): Product
+}
+
+type Mutation {
+  register(data: Register!): Login!
+}

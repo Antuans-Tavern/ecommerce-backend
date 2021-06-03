@@ -6,9 +6,19 @@ import (
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
 )
 
+type CategoryCollection struct {
+	Data  []*model.Category `json:"data"`
+	Total int               `json:"total"`
+}
+
 type Login struct {
 	Token string      `json:"token"`
 	User  *model.User `json:"user"`
+}
+
+type ProductCollection struct {
+	Data  []*model.Product `json:"data"`
+	Total int              `json:"total"`
 }
 
 type Register struct {

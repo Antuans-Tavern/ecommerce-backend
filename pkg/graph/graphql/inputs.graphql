@@ -1,0 +1,6 @@
+input Register {
+  email: String!
+  password: String!
+  name: String!
+  lastname: String!
+}

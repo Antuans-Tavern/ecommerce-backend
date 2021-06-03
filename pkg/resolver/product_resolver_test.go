@@ -18,6 +18,13 @@ func TestMain(m *testing.M) {
 	viper.AddConfigPath("../..")
 	util.PrepareDatabase()
 
+	db, _ := gorm.Open(postgres.Open(database.ConnectionString()), &gorm.Config{})
+
+	seeder.Call(db,
+		seeder.CategorySeeder,
+		seeder.ProductSeeder,
+	)
+
 	code := m.Run()
 	os.Exit(code)
 }
@@ -26,16 +33,23 @@ func TestProductsQuery(t *testing.T) {
 	db, err := gorm.Open(postgres.Open(database.ConnectionString()), &gorm.Config{})
 	assert.Nil(t, err)
 
-	seeder.Call(db,
-		seeder.CategorySeeder,
-		seeder.ProductSeeder,
-	)
-
 	categoryID := int(1)
 
-	products, err := ProductResolver(db, context.Background(), nil, 10, 1, &categoryID)
+	collection, err := ProductsResolver(db, context.Background(), nil, 10, 1, &categoryID)
 	assert.Nil(t, err)
 
-	assert.Equal(t, 10, len(products))
-	assert.Equal(t, uint(categoryID), products[0].CategoryID)
+	assert.Equal(t, 10, len(collection.Data))
+	assert.Equal(t, uint(categoryID), collection.Data[0].CategoryID)
+}
+
+func TestProductQuery(t *testing.T) {
+	db, err := gorm.Open(postgres.Open(database.ConnectionString()), &gorm.Config{})
+	assert.Nil(t, err)
+
+	productID := int(1)
+
+	product, err := ProductResolver(db, context.Background(), productID)
+	assert.Nil(t, err)
+
+	assert.NotEmpty(t, product)
 }
