@@ -13,11 +13,11 @@ import (
 )
 
 func (r *mutationResolver) Register(ctx context.Context, data types.Register) (*types.Login, error) {
-	return resolver.Register(r.DB, ctx, data)
+	return resolver.Register(r.DB, r.Validator, ctx, data)
 }
 
 func (r *queryResolver) Login(ctx context.Context, email string, password string) (*types.Login, error) {
-	return resolver.Login(r.DB, ctx, email, password)
+	panic("unimplemented")
 }
 
 func (r *queryResolver) Categories(ctx context.Context, search *string, pagination int, page int, productsPagination int, productsPage int) (*types.CategoryCollection, error) {

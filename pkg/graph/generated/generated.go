@@ -13,8 +13,8 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graph/scalar"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graph/types"
-	types1 "github.com/Antuans-Tavern/ecommerce-backend/pkg/types"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -4144,12 +4144,12 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 }
 
 func (ec *executionContext) unmarshalNID2uint(ctx context.Context, v interface{}) (uint, error) {
-	res, err := types1.UnmarshalUint(v)
+	res, err := scalar.UnmarshalUint(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNID2uint(ctx context.Context, sel ast.SelectionSet, v uint) graphql.Marshaler {
-	res := types1.MarshalUint(v)
+	res := scalar.MarshalUint(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -4211,12 +4211,12 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 }
 
 func (ec *executionContext) unmarshalNInt2uint(ctx context.Context, v interface{}) (uint, error) {
-	res, err := types1.UnmarshalUint(v)
+	res, err := scalar.UnmarshalUint(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNInt2uint(ctx context.Context, sel ast.SelectionSet, v uint) graphql.Marshaler {
-	res := types1.MarshalUint(v)
+	res := scalar.MarshalUint(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -4358,12 +4358,12 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 }
 
 func (ec *executionContext) unmarshalNUint2uint(ctx context.Context, v interface{}) (uint, error) {
-	res, err := types1.UnmarshalUint(v)
+	res, err := scalar.UnmarshalUint(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNUint2uint(ctx context.Context, sel ast.SelectionSet, v uint) graphql.Marshaler {
-	res := types1.MarshalUint(v)
+	res := scalar.MarshalUint(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

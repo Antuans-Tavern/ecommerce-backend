@@ -14,34 +14,35 @@ func UserSeeder(db *gorm.DB) {
 	color.Blue("Seeding Users...")
 	start := time.Now()
 
-	users := []*model.Profile{}
+	users := []*model.User{}
 
 	for i := 0; i < 100; i++ {
-		users = append(users, &model.Profile{
-			Name:     gofakeit.Name(),
-			Lastname: gofakeit.LastName(),
-			User: &model.User{
+		users = append(users,
+			&model.User{
 				Email:    gofakeit.Email(),
 				Password: util.Hash("secret"),
 				Status:   gofakeit.Bool(),
 				Type: gofakeit.RandomInt([]int{
 					0, 1,
 				}),
-			},
-		})
+				Profile: model.Profile{
+					Name:     gofakeit.Name(),
+					Lastname: gofakeit.LastName(),
+				},
+			})
 	}
 
 	users = append(users,
-		&model.Profile{
-			Name:     gofakeit.Name(),
-			Lastname: gofakeit.LastName(),
-			User: &model.User{
-				Email:    "admin@testing.com",
-				Password: util.Hash("secret"),
-				Status:   gofakeit.Bool(),
-				Type: gofakeit.RandomInt([]int{
-					0, 1,
-				}),
+		&model.User{
+			Email:    "admin@testing.com",
+			Password: util.Hash("secret"),
+			Status:   gofakeit.Bool(),
+			Type: gofakeit.RandomInt([]int{
+				0, 1,
+			}),
+			Profile: model.Profile{
+				Name:     gofakeit.Name(),
+				Lastname: gofakeit.LastName(),
 			},
 		},
 	)

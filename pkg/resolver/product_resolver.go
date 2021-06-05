@@ -2,6 +2,7 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/database/model"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graph/types"
@@ -9,6 +10,8 @@ import (
 )
 
 func ProductsResolver(db *gorm.DB, ctx context.Context, search *string, pagination int, page int, category *int) (*types.ProductCollection, error) {
+	fmt.Println(ctx.Value("user-agent"))
+
 	products := []*model.Product{}
 
 	tx := db.WithContext(ctx).
