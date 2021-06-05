@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Register(db *gorm.DB, validator *validator.Validate, ctx context.Context, data types.Register) (*types.Login, error) {
+func Register(db *gorm.DB, validate *validator.Validate, ctx context.Context, data types.Register) (*types.Login, error) {
 	user := model.User{
 		Email:    data.Email,
 		Password: util.Hash(data.Password),
@@ -21,8 +21,8 @@ func Register(db *gorm.DB, validator *validator.Validate, ctx context.Context, d
 	}
 
 	var err error
-	if err = validator.Struct(user); err != nil {
-		return nil, err
+	if err = validate.Struct(user); err != nil {
+		return nil, util.ValidationError(ctx, err.(validator.ValidationErrors))
 	}
 
 	var accessToken string

@@ -1,8 +1,8 @@
 package lang
 
-func init() {
-	entries = append(entries,
-		entry{"en", "internal error", "An unexpected error has occurred."},
-		entry{"en", "login error", "Usuario o contraseña incorrectos."},
-	)
+func setUpEn() {
+	en, _ := translator.GetTranslator("en")
+
+	en.Add("internal error", "An unexpected error has occurred.", true)
+	en.Add("login error", "Incorrect username or password.", true)
 }

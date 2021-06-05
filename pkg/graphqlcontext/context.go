@@ -4,27 +4,30 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/go-playground/locales/en"
-	ut "github.com/go-playground/universal-translator"
 	"github.com/spf13/viper"
 )
 
-type GraphqlContext struct {
-	UserAgent  string
-	Translator ut.Translator
+type Context struct {
+	UserAgent string
+	Locale    string
 }
 
 func Middleware(next http.Handler) http.Handler {
-	en := en.New()
-	uni := ut.New(en, en)
-
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		trans, _ := uni.GetTranslator(viper.GetString("lang"))
-		ctx := context.WithValue(r.Context(), "contextx", GraphqlContext{
-			UserAgent:  r.UserAgent(),
-			Translator: trans,
+
+		ctx := context.WithValue(r.Context(), "context", Context{
+			UserAgent: r.UserAgent(),
+			Locale:    locale(r.Header.Get("Accept-Language")),
 		})
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func locale(lang string) string {
+	if lang == "es" || lang == "en" {
+		return lang
+	}
+
+	return viper.GetString("lang")
 }

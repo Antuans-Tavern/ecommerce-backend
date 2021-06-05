@@ -1,34 +1,28 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graph"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graphqlcontext"
+	"github.com/fatih/color"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
-func playgroundHandler() echo.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+func SetUp(db *gorm.DB) {
+	r := chi.NewRouter()
 
-	return func(c echo.Context) error {
-		h.ServeHTTP(c.Response().Writer, c.Request())
-		return nil
-	}
-}
+	r.Use(middleware.Logger)
+	r.Use(graphqlcontext.Middleware)
 
-func SetUp(db *gorm.DB) *echo.Echo {
-	e := echo.New()
+	r.Get("/", playground.Handler("GraphiQL", "/query"))
+	r.Post("/query", graph.QueryHandler(db))
 
-	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(60)))
-
-	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
-		LogLevel: log.INFO,
-	}))
-
-	e.POST("/query", graph.QueryHandler(db))
-	e.GET("/", playgroundHandler())
-
-	return e
+	port := viper.GetString("port")
+	color.Blue("Listening on port: %s", port)
+	http.ListenAndServe(":"+port, r)
 }
