@@ -36,7 +36,7 @@ func registerDBUniqueRule(db *gorm.DB, validate *validator.Validate) {
 	validate.RegisterTranslation("db_unique", lang.Translator("es"), func(ut ut.Translator) error {
 		return ut.Add("db_unique", "{0} ya existe.", true)
 	}, func(ut ut.Translator, fe validator.FieldError) string {
-		t, _ := ut.T("db_unique", fe.Field())
+		t, _ := ut.T("db_unique", fe.StructField())
 
 		return t
 	})

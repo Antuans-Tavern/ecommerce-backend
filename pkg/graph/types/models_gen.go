@@ -26,4 +26,6 @@ type Register struct {
 	Password string `json:"password"`
 	Name     string `json:"name"`
 	Lastname string `json:"lastname"`
+	// Exec authentication on the register process
+	Authenticate bool `json:"authenticate"`
 }

@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Register resolver
 func Register(db *gorm.DB, validate *validator.Validate, ctx context.Context, data types.Register) (*types.Login, error) {
 	user := model.User{
 		Email:    data.Email,
@@ -27,7 +28,7 @@ func Register(db *gorm.DB, validate *validator.Validate, ctx context.Context, da
 
 	var accessToken string
 
-	if accessToken, err = user.Register(ctx, db); err != nil {
+	if accessToken, err = user.Register(ctx, db, data.Authenticate); err != nil {
 		return nil, err
 	}
 

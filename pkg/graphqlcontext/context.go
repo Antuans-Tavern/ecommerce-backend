@@ -12,6 +12,10 @@ type Context struct {
 	Locale    string
 }
 
+func GetContext(ctx context.Context) Context {
+	return ctx.Value("context").(Context)
+}
+
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 

@@ -507,6 +507,10 @@ type CategoryCollection {
   password: String!
   name: String!
   lastname: String!
+  """
+  Exec authentication on the register process
+  """
+  authenticate: Boolean! = true
 }
 `, BuiltIn: false},
 	{Name: "pkg/graph/graphql/schema.graphql", Input: `scalar Uint
@@ -3312,6 +3316,10 @@ func (ec *executionContext) unmarshalInputRegister(ctx context.Context, obj inte
 	var it types.Register
 	var asMap = obj.(map[string]interface{})
 
+	if _, present := asMap["authenticate"]; !present {
+		asMap["authenticate"] = true
+	}
+
 	for k, v := range asMap {
 		switch k {
 		case "email":
@@ -3343,6 +3351,14 @@ func (ec *executionContext) unmarshalInputRegister(ctx context.Context, obj inte
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastname"))
 			it.Lastname, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "authenticate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authenticate"))
+			it.Authenticate, err = ec.unmarshalNBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}

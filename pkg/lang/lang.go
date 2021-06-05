@@ -18,11 +18,15 @@ func init() {
 	setUpEn()
 }
 
+// Translator returns the instance of translator for a given locale.
+// If the given locale doesn't exist, a fallback locale will be used
 func Translator(locale string) ut.Translator {
 	trans, _ := translator.GetTranslator(locale)
 	return trans
 }
 
+// Trans returns a translated message for a given locale.
+// If the locale doesn't exist, a fallback locale will be used
 func Trans(locale, msg string, params ...string) string {
 	trans, _ := translator.GetTranslator(locale)
 	message, _ := trans.T(msg, params...)

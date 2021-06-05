@@ -13,6 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// SetUp configures and runs the webserver
 func SetUp(db *gorm.DB) {
 	r := chi.NewRouter()
 

@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// SetUpValidator configures and returns an instance of `validator.Validate`
 func SetUpValidator(db *gorm.DB) *validator.Validate {
 	validate := validator.New()
 
