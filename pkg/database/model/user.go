@@ -73,10 +73,14 @@ func (u *User) Save(db *gorm.DB) error {
 
 // CreateAccressToken creates and store a new access token for the calling user
 func (u *User) CreateAccressToken(db *gorm.DB, userAgent string) (string, error) {
-	accessToken := &AccessToken{
-		UUID:      uuid.New().String(),
-		UserID:    u.ID,
-		UserAgent: userAgent,
+	var accessToken AccessToken
+
+	if err := db.First(&accessToken, "user_agent = ? AND user_id = ?", userAgent, u.ID).Error; err != nil {
+		accessToken = AccessToken{
+			UUID:      uuid.New().String(),
+			UserID:    u.ID,
+			UserAgent: userAgent,
+		}
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
@@ -89,7 +93,7 @@ func (u *User) CreateAccressToken(db *gorm.DB, userAgent string) (string, error)
 		accessToken.Token = token
 	}
 
-	if err := db.Create(accessToken).Error; err != nil {
+	if err := db.Save(accessToken).Error; err != nil {
 		return "", err
 	}
 

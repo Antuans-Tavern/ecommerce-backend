@@ -16,8 +16,8 @@ func (r *mutationResolver) Register(ctx context.Context, data types.Register) (*
 	return resolver.Register(r.DB, r.Validator, ctx, data)
 }
 
-func (r *queryResolver) Login(ctx context.Context, email string, password string) (*types.Login, error) {
-	panic("unimplemented")
+func (r *mutationResolver) Login(ctx context.Context, email string, password string) (*types.Login, error) {
+	return resolver.Login(r.DB, r.Validator, ctx, email, password)
 }
 
 func (r *queryResolver) Categories(ctx context.Context, search *string, pagination int, page int, productsPagination int, productsPage int) (*types.CategoryCollection, error) {
