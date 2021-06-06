@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Product model
 type Product struct {
 	gorm.Model
 	Name        string `gorm:"size:128;unique;not null;"`

@@ -1,33 +1,35 @@
 package lang
 
 import (
-	"github.com/spf13/viper"
-	"golang.org/x/text/language"
-	"golang.org/x/text/message"
-	"golang.org/x/text/message/catalog"
+	"github.com/go-playground/locales/en"
+	"github.com/go-playground/locales/es"
+	ut "github.com/go-playground/universal-translator"
 )
 
-type entry struct {
-	tag, key string
-	msg      interface{}
-}
-
-var entries = []entry{}
+var translator *ut.UniversalTranslator
 
 func init() {
-	for _, e := range entries {
-		tag := language.MustParse(e.tag)
-		switch msg := e.msg.(type) {
-		case string:
-			message.SetString(tag, e.key, msg)
-		case catalog.Message:
-			message.Set(tag, e.key, msg)
-		case []catalog.Message:
-			message.Set(tag, e.key, msg...)
-		}
-	}
+	es := es.New()
+	en := en.New()
+
+	translator = ut.New(es, en)
+
+	setUpEs()
+	setUpEn()
 }
 
-func Translator() *message.Printer {
-	return message.NewPrinter(language.MustParse(viper.GetString("lang")))
+// Translator returns the instance of translator for a given locale.
+// If the given locale doesn't exist, a fallback locale will be used
+func Translator(locale string) ut.Translator {
+	trans, _ := translator.GetTranslator(locale)
+	return trans
+}
+
+// Trans returns a translated message for a given locale.
+// If the locale doesn't exist, a fallback locale will be used
+func Trans(locale, msg string, params ...string) string {
+	trans, _ := translator.GetTranslator(locale)
+	message, _ := trans.T(msg, params...)
+
+	return message
 }

@@ -1,21 +1,24 @@
 package graph
 
 import (
+	"net/http"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/Antuans-Tavern/ecommerce-backend/pkg/graph/generated"
-	"github.com/labstack/echo/v4"
+	"github.com/Antuans-Tavern/ecommerce-backend/pkg/rule"
 	"gorm.io/gorm"
 )
 
-func QueryHandler(db *gorm.DB) echo.HandlerFunc {
+func QueryHandler(db *gorm.DB) http.HandlerFunc {
 	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
 		Resolvers: &Resolver{
-			DB: db,
+			DB:        db,
+			Validator: rule.SetUpValidator(db),
 		},
 	}))
 
-	return func(c echo.Context) error {
-		h.ServeHTTP(c.Response().Writer, c.Request())
-		return nil
-	}
+	h.SetRecoverFunc(recover)
+	h.SetErrorPresenter(errorPresenter)
+
+	return h.ServeHTTP
 }

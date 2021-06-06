@@ -2,6 +2,7 @@ package model
 
 import "gorm.io/gorm"
 
+// Category model
 type Category struct {
 	gorm.Model
 	Name     string `gorm:"size:128;unique;"`

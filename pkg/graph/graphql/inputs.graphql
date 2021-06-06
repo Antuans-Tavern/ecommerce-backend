@@ -3,4 +3,8 @@ input Register {
   password: String!
   name: String!
   lastname: String!
+  """
+  Exec authentication on the register process
+  """
+  authenticate: Boolean! = true
 }

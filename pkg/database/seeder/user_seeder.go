@@ -17,18 +17,19 @@ func UserSeeder(db *gorm.DB) {
 	users := []*model.Profile{}
 
 	for i := 0; i < 100; i++ {
-		users = append(users, &model.Profile{
-			Name:     gofakeit.Name(),
-			Lastname: gofakeit.LastName(),
-			User: &model.User{
-				Email:    gofakeit.Email(),
-				Password: util.Hash("secret"),
-				Status:   gofakeit.Bool(),
-				Type: gofakeit.RandomInt([]int{
-					0, 1,
-				}),
-			},
-		})
+		users = append(users,
+			&model.Profile{
+				Name:     gofakeit.Name(),
+				Lastname: gofakeit.LastName(),
+				User: &model.User{
+					Email:    gofakeit.Email(),
+					Password: util.Hash("secret"),
+					Status:   gofakeit.Bool(),
+					Type: gofakeit.RandomInt([]int{
+						0, 1,
+					}),
+				},
+			})
 	}
 
 	users = append(users,

@@ -7,10 +7,10 @@ import (
 )
 
 type Profile struct {
-	UserID    uint   `gorm:"foreingKey;not null;" json:"userID"`
-	User      *User  `json:"user"`
-	Name      string `gorm:"size:64;not null;" json:"name"`
-	Lastname  string `gorm:"size:64;not null;" json:"lastname"`
+	UserID    uint `gorm:"foreingKey;not null;"`
+	User      *User
+	Name      string `gorm:"size:64;not null;" json:"name" validate:"required,max=64"`
+	Lastname  string `gorm:"size:64;not null;" json:"lastname" validate:"required,max=64"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

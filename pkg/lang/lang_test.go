@@ -9,8 +9,8 @@ import (
 
 func TestTranslator(t *testing.T) {
 	viper.Set("lang", "es")
-	assert.Equal(t, "Ha ocurrido un error inesperado.", Translator().Sprintf("internal error"))
+	assert.Equal(t, "Ha ocurrido un error en el servidor.", Trans("es", "internal error"))
 
 	viper.Set("lang", "en")
-	assert.Equal(t, "An unexpected error has occurred.", Translator().Sprintf("internal error"))
+	assert.Equal(t, "An unexpected error has occurred.", Trans("en", "internal error"))
 }
