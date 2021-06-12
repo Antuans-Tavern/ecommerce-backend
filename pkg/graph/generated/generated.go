@@ -74,6 +74,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		Login    func(childComplexity int, email string, password string) int
 		Register func(childComplexity int, data types.Register) int
 	}
 
@@ -100,7 +101,6 @@ type ComplexityRoot struct {
 	Query struct {
 		Categories func(childComplexity int, search *string, pagination int, page int, productsPagination int, productsPage int) int
 		Category   func(childComplexity int, id int, productsPagination int, productsPage int) int
-		Login      func(childComplexity int, email string, password string) int
 		Product    func(childComplexity int, id int) int
 		Products   func(childComplexity int, search *string, pagination int, page int, category *int) int
 	}
@@ -115,9 +115,9 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	Register(ctx context.Context, data types.Register) (*types.Login, error)
+	Login(ctx context.Context, email string, password string) (*types.Login, error)
 }
 type QueryResolver interface {
-	Login(ctx context.Context, email string, password string) (*types.Login, error)
 	Categories(ctx context.Context, search *string, pagination int, page int, productsPagination int, productsPage int) (*types.CategoryCollection, error)
 	Category(ctx context.Context, id int, productsPagination int, productsPage int) (*model.Category, error)
 	Products(ctx context.Context, search *string, pagination int, page int, category *int) (*types.ProductCollection, error)
@@ -251,6 +251,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Login.User(childComplexity), true
 
+	case "Mutation.login":
+		if e.complexity.Mutation.Login == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_login_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.Login(childComplexity, args["email"].(string), args["password"].(string)), true
+
 	case "Mutation.register":
 		if e.complexity.Mutation.Register == nil {
 			break
@@ -363,18 +375,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Category(childComplexity, args["id"].(int), args["productsPagination"].(int), args["productsPage"].(int)), true
-
-	case "Query.login":
-		if e.complexity.Query.Login == nil {
-			break
-		}
-
-		args, err := ec.field_Query_login_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Login(childComplexity, args["email"].(string), args["password"].(string)), true
 
 	case "Query.product":
 		if e.complexity.Query.Product == nil {
@@ -517,8 +517,6 @@ type CategoryCollection {
 scalar Uint8
 
 type Query {
-  login(email: String!, password: String!): Login!
-
   categories(
     search: String
     pagination: Int! = 10
@@ -545,6 +543,7 @@ type Query {
 
 type Mutation {
   register(data: Register!): Login!
+  login(email: String!, password: String!): Login!
 }
 `, BuiltIn: false},
 	{Name: "pkg/graph/graphql/types.graphql", Input: `type Login {
@@ -598,6 +597,30 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["password"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["password"] = arg1
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_register_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -710,30 +733,6 @@ func (ec *executionContext) field_Query_category_args(ctx context.Context, rawAr
 		}
 	}
 	args["productsPage"] = arg2
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_login_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["email"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["email"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["password"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["password"] = arg1
 	return args, nil
 }
 
@@ -1431,6 +1430,48 @@ func (ec *executionContext) _Mutation_register(ctx context.Context, field graphq
 	return ec.marshalNLogin2ᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋpkgᚋgraphᚋtypesᚐLogin(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_login_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Login(rctx, args["email"].(string), args["password"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*types.Login)
+	fc.Result = res
+	return ec.marshalNLogin2ᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋpkgᚋgraphᚋtypesᚐLogin(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Product_id(ctx context.Context, field graphql.CollectedField, obj *model.Product) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1811,48 +1852,6 @@ func (ec *executionContext) _Profile_lastname(ctx context.Context, field graphql
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_login_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Login(rctx, args["email"].(string), args["password"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*types.Login)
-	fc.Result = res
-	return ec.marshalNLogin2ᚖgithubᚗcomᚋAntuansᚑTavernᚋecommerceᚑbackendᚋpkgᚋgraphᚋtypesᚐLogin(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_categories(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3561,6 +3560,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "login":
+			out.Values[i] = ec._Mutation_login(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3705,20 +3709,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "login":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_login(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
 		case "categories":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
